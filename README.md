@@ -1,4 +1,4 @@
-# Aentic Exam Framework
+# Agentic Exam Framework
 
 A comprehensive AI-powered examination framework built with Spring Boot, featuring student registration, AI question generation, real-time exams, and intelligent evaluation with detailed reporting.
 
