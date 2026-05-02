@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Assisted Exam Framework - Student Feedback</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6fb;
+      color: #1f2937;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 70px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 42px;
+      margin-bottom: 12px;
+    }
+
+    header p {
+      max-width: 760px;
+      margin: 0 auto 28px;
+      font-size: 18px;
+    }
+
+    .button {
+      display: inline-block;
+      background: white;
+      color: #4f46e5;
+      padding: 12px 22px;
+      margin: 6px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .button.dark {
+      background: #111827;
+      color: white;
+    }
+
+    main {
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    section {
+      background: white;
+      padding: 28px;
+      margin-bottom: 24px;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.07);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #111827;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: #f9fafb;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .rating-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .rating-box a {
+      text-decoration: none;
+      background: #eef2ff;
+      color: #4338ca;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      border: 1px solid #c7d2fe;
+    }
+
+    .quote {
+      background: #ecfeff;
+      border-left: 5px solid #06b6d4;
+      padding: 18px;
+      border-radius: 8px;
+      font-style: italic;
+    }
+
+    pre {
+      background: #111827;
+      color: #e5e7eb;
+      padding: 16px;
+      border-radius: 10px;
+      overflow-x: auto;
+    }
+
+    footer {
+      text-align: center;
+      color: #6b7280;
+      padding: 30px 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Assisted Exam Framework</h1>
+    <p>
+      A personal open-source project to help students practice exams using AI-generated questions, structured validation, clear answers, and simple feedback reports.
+    </p>
+    <a class="button" href="https://github.com/swapneswarsundarray/ai-assisted-exam">View GitHub Repo</a>
+    <a class="button dark" href="#feedback">Give Feedback</a>
+  </header>
+
+  <main>
+    <section>
+      <h2>About This Project</h2>
+      <p>
+        This project was built to explore how AI can help students create practice exams in a more structured and reliable way. Students can choose a subject, difficulty level, and topic. The system then generates multiple-choice questions, validates the output, and shows answers in a clear format.
+      </p>
+      <p>
+        The goal is not just to use AI, but to make AI output more predictable and useful for learning.
+      </p>
+    </section>
+
+    <section>
+      <h2>How Students Can Use It</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>1. Register</h3>
+          <p>Students enter basic details such as name, education level, country, and interests.</p>
+        </div>
+        <div class="card">
+          <h3>2. Select Topic</h3>
+          <p>Students choose subjects like Mathematics, Science, Java, Programming, or System Design.</p>
+        </div>
+        <div class="card">
+          <h3>3. Start Exam</h3>
+          <p>The exam starts with a clear topic, difficulty level, question count, and timer flow.</p>
+        </div>
+        <div class="card">
+          <h3>4. Learn From Answers</h3>
+          <p>The system shows correct answers after validation so students can learn from mistakes.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>What Makes It Different</h2>
+      <p>
+        Many AI tools directly show whatever the model generates. This project adds a control layer between AI and the student. The system checks the structure, keeps the question format consistent, and makes sure answers are presented clearly.
+      </p>
+      <p>
+        This makes the learning experience more reliable. Students see questions in the same format, with clear answer choices and simple answer reveal options.
+      </p>
+    </section>
+
+    <section>
+      <h2>Run Locally</h2>
+      <p>You can run the project locally using Java and Maven.</p>
+      <pre>git clone https://github.com/swapneswarsundarray/ai-assisted-exam.git
+cd ai-assisted-exam
+mvn clean package
+java -jar target/exam-framework-1.0.0.jar</pre>
+      <p>Then open:</p>
+      <pre>http://localhost:8080</pre>
+    </section>
+
+    <section id="feedback">
+      <h2>Student Rating & Feedback</h2>
+      <p>
+        If you tried the project, please leave a rating and comment on GitHub. Your feedback will help improve the project and make it more useful for students and teachers.
+      </p>
+
+      <div class="rating-box">
+        <a href="https://github.com/swapneswarsundarray/ai-assisted-exam/issues/new?title=Student%20Rating%3A%205%20Stars&body=I%20rate%20this%20project%205%20stars.%0A%0AWhat%20I%20liked%3A%0A-%20%0A%0AWhat%20can%20be%20improved%3A%0A-%20" target="_blank">⭐ 5 Stars</a>
+        <a href="https://github.com/swapneswarsundarray/ai-assisted-exam/issues/new?title=Student%20Rating%3A%204%20Stars&body=I%20rate%20this%20project%204%20stars.%0A%0AWhat%20I%20liked%3A%0A-%20%0A%0AWhat%20can%20be%20improved%3A%0A-%20" target="_blank">⭐ 4 Stars</a>
+        <a href="https://github.com/swapneswarsundarray/ai-assisted-exam/issues/new?title=Student%20Rating%3A%203%20Stars&body=I%20rate%20this%20project%203%20stars.%0A%0AWhat%20I%20liked%3A%0A-%20%0A%0AWhat%20can%20be%20improved%3A%0A-%20" target="_blank">⭐ 3 Stars</a>
+        <a href="https://github.com/swapneswarsundarray/ai-assisted-exam/issues/new?title=Student%20Feedback&body=I%20tried%20the%20AI%20Assisted%20Exam%20Framework.%0A%0AWhat%20I%20liked%3A%0A-%20%0A%0AWhat%20was%20confusing%3A%0A-%20%0A%0ASuggestions%3A%0A-%20" target="_blank">Write Comment</a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Example Feedback Format</h2>
+      <div class="quote">
+        “I tried the Mathematics Easy exam. The questions were clear, the answer choices were easy to understand, and the Show Answer button helped me learn quickly. I would like to see more subjects and explanations in future versions.”
+      </div>
+    </section>
+
+    <section>
+      <h2>Contribute</h2>
+      <p>
+        Developers, teachers, and students are welcome to contribute. You can help improve question generation, add more topics, improve UI, add reports, or strengthen AI validation.
+      </p>
+      <a class="button dark" href="https://github.com/swapneswarsundarray/ai-assisted-exam/issues">View Issues</a>
+      <a class="button dark" href="https://github.com/swapneswarsundarray/ai-assisted-exam/pulls">Submit Pull Request</a>
+    </section>
+  </main>
+
+  <footer>
+    <p>Built as an open-source learning project. Feedback and contributions are welcome.</p>
+  </footer>
+</body>
+</html>
