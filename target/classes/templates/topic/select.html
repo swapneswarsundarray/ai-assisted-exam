@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Topic - Aentic Exam Framework</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="text-center mb-4">Select Exam Topic</h2>
+                
+                <div class="alert alert-info">
+                    <h5><i class="bi bi-info-circle"></i> Choose a topic to start your exam</h5>
+                    <p>Select from the available topics below. Each topic has different difficulty levels and time limits.</p>
+                </div>
+                
+                <div class="row" th:if="${topics != null and !topics.empty}">
+                    <div class="col-md-4 mb-3" th:each="topic : ${topics}">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 th:text="${topic.name}">Topic Name</h5>
+                                <span class="badge bg-primary" th:text="${topic.difficultyLevel}">Difficulty</span>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text" th:text="${topic.description}">Topic description</p>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small class="text-muted">
+                                            <i class="bi bi-clock"></i> 
+                                            <span th:text="${topic.durationMinutes} + ' minutes'">Duration</span>
+                                        </small>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">
+                                            <i class="bi bi-question-circle"></i> 
+                                            <span th:text="${topic.questionCount} + ' questions'">Questions</span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <form th:action="@{/exams/start}" method="get">
+                                    <input type="hidden" name="studentId" value="1">
+                                    <input type="hidden" name="topicId" th:value="${topic.id}">
+                                    <button type="submit" class="btn btn-primary w-100">Start Exam</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div th:if="${topics == null or topics.empty}" class="text-center">
+                    <div class="alert alert-warning">
+                        <h4>No Topics Available</h4>
+                        <p>There are currently no exam topics available. Please check back later.</p>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="/students/register" class="btn btn-secondary">Back to Registration</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

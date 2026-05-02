@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Results - Aentic Exam Framework</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header" th:class="'text-center text-white ' + (${exam.percentage} >= 70 ? 'bg-success' : (${exam.percentage} >= 50 ? 'bg-warning' : 'bg-danger'))">
+                        <h3>Exam Results</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <h2 th:text="${exam.topic.name}">Topic Name</h2>
+                            <p class="text-muted">Exam Code: <strong th:text="${exam.examCode}">EXM-123</strong></p>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Performance Summary</h5>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td><strong>Score:</strong></td>
+                                        <td th:text="${exam.totalScore} + '/' + ${exam.maxScore}">10/20</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Percentage:</strong></td>
+                                        <td th:text="${#numbers.formatDecimal(exam.percentage, 1, 1)} + '%'">75.0%</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Grade:</strong></td>
+                                        <td>
+                                            <span class="badge" th:class="'badge ' + (${exam.grade} == 'A' ? 'bg-success' : (${exam.grade} == 'B' ? 'bg-info' : (${exam.grade} == 'C' ? 'bg-warning' : 'bg-danger')))" 
+                                                  th:text="${exam.grade}">A</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Duration:</strong></td>
+                                        <td th:if="${exam.startTime != null and exam.endTime != null}" 
+                                            th:text="${#temporals.duration(exam.startTime, exam.endTime).toMinutes() + ' minutes'}">30 minutes</td>
+                                        <td th:if="${exam.startTime == null or exam.endTime == null}">N/A</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Exam Details</h5>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td><strong>Student:</strong></td>
+                                        <td th:text="${exam.student.fullName}">Student Name</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Started:</strong></td>
+                                        <td th:text="${#temporals.format(exam.startTime, 'yyyy-MM-dd HH:mm')}">2024-01-01 10:00</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Completed:</strong></td>
+                                        <td th:text="${#temporals.format(exam.endTime, 'yyyy-MM-dd HH:mm')}">2024-01-01 10:30</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Status:</strong></td>
+                                        <td th:text="${exam.status}">COMPLETED</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <div class="alert" th:class="'alert ' + (${exam.percentage} >= 70 ? 'alert-success' : (${exam.percentage} >= 50 ? 'alert-warning' : 'alert-danger'))">
+                                <h5 th:if="${exam.percentage} >= 70">🎉 Excellent Work!</h5>
+                                <h5 th:if="${exam.percentage} >= 50 and ${exam.percentage} < 70">👍 Good Effort!</h5>
+                                <h5 th:if="${exam.percentage} < 50">📚 Keep Practicing!</h5>
+                                <p th:if="${exam.percentage} >= 70">You have demonstrated excellent understanding of the topic.</p>
+                                <p th:if="${exam.percentage} >= 50 and ${exam.percentage} < 70">You have a good foundation with room for improvement.</p>
+                                <p th:if="${exam.percentage} < 50">Consider reviewing the material and trying again.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h5>Actions</h5>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                                <a th:href="@{/reports/{examId}(examId=${exam.id})}" class="btn btn-primary">View Detailed Report</a>
+                                <a th:href="@{/reports/export/pdf/{reportCode}(reportCode=${'RPT-' + T(java.lang.System).currentTimeMillis()})}" class="btn btn-success">Download PDF</a>
+                                <a th:href="@{/reports/export/json/{reportCode}(reportCode=${'RPT-' + T(java.lang.System).currentTimeMillis()})}" class="btn btn-info">Download JSON</a>
+                                <a href="/topics/select" class="btn btn-secondary">Take Another Exam</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

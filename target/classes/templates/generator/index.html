@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Question Generator - Create Custom Questions Instantly</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin: 30px auto;
+            max-width: 900px;
+            padding: 40px;
+        }
+        
+        .header-title {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .user-type-card {
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .user-type-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+        }
+        
+        .user-type-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .difficulty-btn {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .difficulty-btn:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .difficulty-btn.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px 40px;
+            transition: all 0.3s ease;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .loading-spinner {
+            display: none;
+        }
+        
+        .questions-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .question-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question-number {
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+        
+        .option-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin: 5px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .option-item.correct {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        
+        .option-item.wrong {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .show-answer-btn {
+            background: #28a745;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            padding: 5px 15px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .icon-large {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-container">
+            <h1 class="header-title">🚀 AI Question Generator</h1>
+            <p class="text-center text-muted mb-4">Create personalized questions for any topic and difficulty level</p>
+            
+            <!-- User Type Selection -->
+            <div class="mb-4">
+                <h5 class="text-center mb-3">Who are you?</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="user-type-card" onclick="selectUserType('student')">
+                            <div class="icon-large">👨‍🎓</div>
+                            <h6>Student</h6>
+                            <small class="text-muted">I'm learning and want practice questions</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="user-type-card" onclick="selectUserType('professional')">
+                            <div class="icon-large">💼</div>
+                            <h6>Professional</h6>
+                            <small class="text-muted">I need questions for teaching or testing</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dynamic Form Based on User Type -->
+            <form id="questionForm">
+                <!-- Student Fields -->
+                <div id="studentFields" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="grade" class="form-label">Grade Level</label>
+                            <select class="form-control" id="grade" name="grade">
+                                <option value="">Select your grade</option>
+                                <option value="kindergarten">Kindergarten</option>
+                                <option value="1st">1st Grade</option>
+                                <option value="2nd">2nd Grade</option>
+                                <option value="3rd">3rd Grade</option>
+                                <option value="4th">4th Grade</option>
+                                <option value="5th">5th Grade</option>
+                                <option value="6th">6th Grade</option>
+                                <option value="7th">7th Grade</option>
+                                <option value="8th">8th Grade</option>
+                                <option value="9th">9th Grade</option>
+                                <option value="10th">10th Grade</option>
+                                <option value="11th">11th Grade</option>
+                                <option value="12th">12th Grade</option>
+                                <option value="college">College</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="studentTopic" class="form-label">Subject/Topic</label>
+                            <input type="text" class="form-control" id="studentTopic" name="studentTopic" 
+                                   placeholder="e.g., Science, Math, History">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Professional Fields -->
+                <div id="professionalFields" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="profession" class="form-label">Your Role</label>
+                            <input type="text" class="form-control" id="profession" name="profession" 
+                                   placeholder="e.g., Teacher, Manager, Developer">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="professionalTopic" class="form-label">Topic/Subject</label>
+                            <input type="text" class="form-control" id="professionalTopic" name="professionalTopic" 
+                                   placeholder="e.g., Programming, Management, Science">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label for="audience" class="form-label">Target Audience (Optional)</label>
+                            <input type="text" class="form-control" id="audience" name="audience" 
+                                   placeholder="e.g., 2nd grade students, software developers, medical students">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Common Fields -->
+                <div id="commonFields" style="display: none;">
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label for="apiKey" class="form-label">
+                                <i class="bi bi-key"></i> Google Gemini API Key
+                                <small class="text-muted"> (Required for AI question generation)</small>
+                            </label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="apiKey" name="apiKey" 
+                                       placeholder="Your Google Gemini API key..." required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="toggleApiKeyVisibility()">
+                                    <i class="bi bi-eye" id="apiKeyToggleIcon"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted">
+                                Your API key is only used for this session and is not stored.
+                                <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Get your API key here</a>
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label for="questionCount" class="form-label">Number of Questions</label>
+                            <select class="form-control" id="questionCount" name="questionCount">
+                                <option value="5">5 Questions</option>
+                                <option value="10" selected>10 Questions</option>
+                                <option value="15">15 Questions</option>
+                                <option value="20">20 Questions</option>
+                                <option value="25">25 Questions</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="questionType" class="form-label">Question Type</label>
+                            <select class="form-control" id="questionType" name="questionType">
+                                <option value="multiple_choice">Multiple Choice</option>
+                                <option value="true_false">True/False</option>
+                                <option value="short_answer">Short Answer</option>
+                                <option value="mixed">Mixed Types</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Difficulty Selection -->
+                    <div class="mt-4">
+                        <h6 class="text-center mb-3">Select Difficulty Level</h6>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="difficulty-btn" onclick="selectDifficulty('easy')">
+                                    <div class="icon-large">😊</div>
+                                    <h6>Easy</h6>
+                                    <small class="text-muted">Simple and straightforward</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="difficulty-btn" onclick="selectDifficulty('medium')">
+                                    <div class="icon-large">🤔</div>
+                                    <h6>Medium</h6>
+                                    <small class="text-muted">Moderately challenging</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="difficulty-btn" onclick="selectDifficulty('hard')">
+                                    <div class="icon-large">🧠</div>
+                                    <h6>Hard</h6>
+                                    <small class="text-muted">Complex and challenging</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Generate Button -->
+                    <div class="text-center mt-4">
+                        <button type="button" class="generate-btn" onclick="generateQuestions()" disabled>
+                            <span class="btn-text">🚀 Generate Questions</span>
+                            <span class="loading-spinner">
+                                <span class="spinner-border spinner-border-sm" role="status"></span>
+                                Generating...
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            
+            <!-- Questions Display -->
+            <div id="questionsContainer" class="questions-container">
+                <h5 class="mb-3">📚 Generated Questions</h5>
+                <div id="questionsList"></div>
+                <div class="text-center mt-4">
+                    <button class="btn btn-outline-primary" onclick="exportToPDF()">📄 Export PDF</button>
+                    <button class="btn btn-outline-success" onclick="regenerateQuestions()">🔄 Regenerate</button>
+                    <button class="btn btn-outline-secondary" onclick="resetForm()">🔄 Start Over</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let selectedUserType = null;
+        let selectedDifficulty = null;
+        let generatedQuestions = [];
+        
+        function selectUserType(type) {
+            selectedUserType = type;
+            
+            // Update UI
+            document.querySelectorAll('.user-type-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.user-type-card').classList.add('selected');
+            
+            // Show/hide relevant fields
+            document.getElementById('studentFields').style.display = type === 'student' ? 'block' : 'none';
+            document.getElementById('professionalFields').style.display = type === 'professional' ? 'block' : 'none';
+            document.getElementById('commonFields').style.display = 'block';
+        }
+        
+        function selectDifficulty(level) {
+            selectedDifficulty = level;
+            
+            // Update UI
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.closest('.difficulty-btn').classList.add('selected');
+            
+            // Enable generate button
+            document.querySelector('.generate-btn').disabled = false;
+        }
+        
+        function generateQuestions() {
+            const formData = collectFormData();
+            
+            if (!validateForm(formData)) {
+                return;
+            }
+            
+            // Show loading
+            document.querySelector('.btn-text').style.display = 'none';
+            document.querySelector('.loading-spinner').style.display = 'inline-block';
+            document.querySelector('.generate-btn').disabled = true;
+            
+            // Call API
+            fetch('/api/generator/questions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                generatedQuestions = data.questions;
+                displayQuestions(data.questions);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                let errorMessage = 'Error generating questions. Please try again.';
+                
+                if (error.response) {
+                    // The server responded with an error status
+                    if (error.response.status === 400) {
+                        errorMessage = 'Please fill all required fields correctly.';
+                        // Try to get specific error from response
+                        error.response.json().then(data => {
+                            if (data.error && data.error.includes('API key')) {
+                                errorMessage = data.error;
+                            }
+                        }).catch(() => {});
+                    } else if (error.response.status === 503) {
+                        errorMessage = 'Gemini service is not available. Please check your API key configuration.';
+                    } else if (error.response.status === 500) {
+                        errorMessage = 'Server error occurred. Please try again later.';
+                        
+                        // Check for specific Gemini errors in the response
+                        error.response.json().then(data => {
+                            if (data.error && data.error.includes('QUOTA_EXCEEDED')) {
+                                errorMessage = '⚠️ Gemini API Quota Exceeded\n\nYour Gemini API quota has been exceeded. To fix this:\n\n1. Go to https://console.cloud.google.com/billing\n2. Add payment method or increase your usage limits\n3. Wait for your quota to reset (usually at the start of the month)\n4. Try again with a different API key if available';
+                            } else if (data.error && data.error.includes('PERMISSION_DENIED')) {
+                                errorMessage = '❌ Invalid Gemini API Key\n\nYour API key is invalid or lacks permissions. To fix this:\n\n1. Go to https://console.cloud.google.com/apis/credentials\n2. Create a new API key\n3. Ensure the Vertex AI API is enabled\n4. Copy the new key and try again';
+                            } else if (data.error && data.error.includes('BILLING_REQUIRED')) {
+                                errorMessage = '💳 Billing Required\n\nYou need to enable billing for Google Cloud. To fix this:\n\n1. Go to https://console.cloud.google.com/billing\n2. Enable billing for your project\n3. Try again after billing is enabled';
+                            } else if (data.error) {
+                                errorMessage = data.error;
+                            }
+                        }).catch(() => {
+                            // Ignore JSON parsing errors
+                        });
+                    } else {
+                        // Try to get the error message from the response
+                        error.response.json().then(data => {
+                            if (data.error) {
+                                errorMessage = data.error;
+                            }
+                        }).catch(() => {
+                            // Ignore JSON parsing errors
+                        });
+                    }
+                }
+                
+                alert(errorMessage);
+            })
+            .finally(() => {
+                // Hide loading
+                document.querySelector('.btn-text').style.display = 'inline-block';
+                document.querySelector('.loading-spinner').style.display = 'none';
+                document.querySelector('.generate-btn').disabled = false;
+            });
+        }
+        
+        function collectFormData() {
+            const formData = {
+                userType: selectedUserType,
+                difficulty: selectedDifficulty,
+                apiKey: document.getElementById('apiKey').value,
+                questionCount: document.getElementById('questionCount').value,
+                questionType: document.getElementById('questionType').value
+            };
+            
+            if (selectedUserType === 'student') {
+                formData.grade = document.getElementById('grade').value;
+                formData.topic = document.getElementById('studentTopic').value;
+            } else {
+                formData.profession = document.getElementById('profession').value;
+                formData.topic = document.getElementById('professionalTopic').value;
+                formData.audience = document.getElementById('audience').value;
+            }
+            
+            // Debug logging
+            console.log('Form data collected:', formData);
+            
+            return formData;
+        }
+        
+        function toggleApiKeyVisibility() {
+            const apiKeyInput = document.getElementById('apiKey');
+            const toggleIcon = document.getElementById('apiKeyToggleIcon');
+            
+            if (apiKeyInput.type === 'password') {
+                apiKeyInput.type = 'text';
+                toggleIcon.className = 'bi bi-eye-slash';
+            } else {
+                apiKeyInput.type = 'password';
+                toggleIcon.className = 'bi bi-eye';
+            }
+        }
+        
+        function validateForm(formData) {
+            if (!formData.userType || !formData.difficulty) {
+                alert('Please select user type and difficulty level.');
+                return false;
+            }
+            
+            if (!formData.apiKey || formData.apiKey.trim().length < 10) {
+                alert('Please enter your Google Gemini API key. You can get one from Google Cloud Console');
+                return false;
+            }
+            
+            if (formData.userType === 'student') {
+                if (!formData.grade || !formData.topic) {
+                    alert('Please select your grade and enter a subject/topic.');
+                    return false;
+                }
+            } else {
+                if (!formData.profession || !formData.topic) {
+                    alert('Please enter your role and a subject/topic.');
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        function displayQuestions(questions) {
+            const container = document.getElementById('questionsContainer');
+            const questionsList = document.getElementById('questionsList');
+            
+            questionsList.innerHTML = '';
+            
+            questions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.innerHTML = `
+                    <div class="d-flex align-items-start">
+                        <span class="question-number">${index + 1}</span>
+                        <div class="flex-grow-1">
+                            <h6>${question.questionText}</h6>
+                            ${question.options ? `
+                                <ul class="options-list">
+                                    ${question.options.split(',').map((option, i) => `
+                                        <li class="option-item" onclick="toggleOption(this, '${question.correctAnswer}', '${String.fromCharCode(65 + i)}')">
+                                            ${option.trim()}
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            ` : ''}
+                            <button class="show-answer-btn" onclick="showAnswer(${index})">Show Answer</button>
+                            <div id="answer-${index}" style="display: none; margin-top: 10px; padding: 10px; background: #e8f5e8; border-radius: 5px;">
+                                <strong>Answer:</strong> ${question.correctAnswer || question.answer}
+                                ${question.explanation ? `<br><small>${question.explanation}</small>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                questionsList.appendChild(questionCard);
+            });
+            
+            container.style.display = 'block';
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function toggleOption(element, correctAnswer, selectedOption) {
+            // Remove previous selections
+            element.parentElement.querySelectorAll('.option-item').forEach(item => {
+                item.classList.remove('correct', 'wrong');
+            });
+            
+            // Add correct/wrong classes
+            if (selectedOption === correctAnswer) {
+                element.classList.add('correct');
+            } else {
+                element.classList.add('wrong');
+                // Also highlight correct answer
+                element.parentElement.querySelectorAll('.option-item').forEach(item => {
+                    if (item.textContent.trim().startsWith(correctAnswer)) {
+                        item.classList.add('correct');
+                    }
+                });
+            }
+        }
+        
+        function showAnswer(index) {
+            const answerDiv = document.getElementById(`answer-${index}`);
+            answerDiv.style.display = answerDiv.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function exportToPDF() {
+            // Implement PDF export
+            window.open(`/api/generator/export/pdf?questions=${encodeURIComponent(JSON.stringify(generatedQuestions))}`);
+        }
+        
+        function regenerateQuestions() {
+            generateQuestions();
+        }
+        
+        function resetForm() {
+            // Reset form
+            document.getElementById('questionForm').reset();
+            document.querySelectorAll('.user-type-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.getElementById('studentFields').style.display = 'none';
+            document.getElementById('professionalFields').style.display = 'none';
+            document.getElementById('commonFields').style.display = 'none';
+            document.getElementById('questionsContainer').style.display = 'none';
+            
+            selectedUserType = null;
+            selectedDifficulty = null;
+            generatedQuestions = [];
+        }
+    </script>
+</body>
+</html>

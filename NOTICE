@@ -1,0 +1,11 @@
+Aentic Exam Framework
+Copyright 2024 Aentic
+
+This product includes software developed at:
+- The Apache Software Foundation (http://www.apache.org/)
+- Spring Framework (https://spring.io/)
+- OpenAI GPT-3 Java Service (https://github.com/TheoKanning/openai-java)
+- iText PDF Library (https://itextpdf.com/)
+- H2 Database (http://www.h2database.com/)
+- Bootstrap (https://getbootstrap.com/)
+- Thymeleaf (https://www.thymeleaf.org/)
