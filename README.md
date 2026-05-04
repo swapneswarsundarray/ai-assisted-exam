@@ -1,4 +1,4 @@
-# Agentic Exam Framework
+# Adaptive AI-Based Examination System
 
 A comprehensive AI-powered examination framework built with Spring Boot, featuring student registration, AI question generation, real-time exams, and intelligent evaluation with detailed reporting.
 
